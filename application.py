@@ -3,26 +3,26 @@ import boto3
 import time
 import os
 import requests
-# import jwt
+import jwt
 import json
 # from flask_cognito import CognitoAuth, 
 
-app = Flask(__name__)
+application = Flask(__name__)
 client_id = "1c5m1dkc43amhvr10bjf1jrqsr"
 client_secret = "n8vk8hqna7aqn7fve6m7lq6i9mal3gbh3n0c834gqhglvuq68aj"
 callback_uri = 'http://localhost:5000/'
 cognito_app_url = "https://cu-fantasy.auth.us-east-1.amazoncognito.com"
 token_expire_time = {}
 
-@app.route('/login')
+@application.route('/login')
 def login():
     return render_template("login.html")
 
-@app.route('/logout')
+@application.route('/logout')
 def logout():
     return render_template("logout.html")
 
-@app.route('/validate_token')
+@application.route('/validate_token')
 def validate_token():
     if 'token' in request.headers:
         return {
@@ -38,7 +38,7 @@ def validate_token():
         'error message': 'The token did not exist. Please login first!'
     }
 
-@app.route('/')
+@application.route('/')
 def main():
     code = request.args.get('code')
     print(code)
@@ -73,4 +73,4 @@ def main():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    application.run()
