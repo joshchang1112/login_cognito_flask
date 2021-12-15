@@ -3,7 +3,7 @@ import boto3
 import time
 import os
 import requests
-import jwt
+# import jwt
 import json
 # from flask_cognito import CognitoAuth, 
 
