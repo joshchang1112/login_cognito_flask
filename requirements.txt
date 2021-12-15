@@ -1,4 +1,4 @@
 boto3==1.18.21
 flask==2.0.2
-jwt==2.3.0
+pyjwt==2.3.0
 requests==2.26.0
