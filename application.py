@@ -8,29 +8,29 @@ import json
 import pymysql
 # from flask_cognito import CognitoAuth, 
 
-conn = pymysql.connect(
-    host='cu-fantasy-baseball-user.chnpzu4a9le6.us-east-1.rds.amazonaws.com',
-    port=3306,
-    user='admin',
-    password='abcd1234ABCD1234===',
-    db='user',
-	cursorclass=pymysql.cursors.DictCursor
-)
+# conn = pymysql.connect(
+#     host='cu-fantasy-baseball-user.chnpzu4a9le6.us-east-1.rds.amazonaws.com',
+#     port=3306,
+#     user='admin',
+#     password='abcd1234ABCD1234===',
+#     db='user',
+# 	cursorclass=pymysql.cursors.DictCursor
+# )
 
 
-client_id = "1c5m1dkc43amhvr10bjf1jrqsr"
-client_secret = "n8vk8hqna7aqn7fve6m7lq6i9mal3gbh3n0c834gqhglvuq68aj"
-callback_uri = 'https://baseball.cu-fantasy.com/'
-cognito_app_url = "https://cu-fantasy.auth.us-east-1.amazoncognito.com"
-client_identify = boto3.client('cognito-identity', region_name='us-east-1')
+# client_id = "1c5m1dkc43amhvr10bjf1jrqsr"
+# client_secret = "n8vk8hqna7aqn7fve6m7lq6i9mal3gbh3n0c834gqhglvuq68aj"
+# callback_uri = 'https://baseball.cu-fantasy.com/'
+# cognito_app_url = "https://cu-fantasy.auth.us-east-1.amazoncognito.com"
+# client_identify = boto3.client('cognito-identity', region_name='us-east-1')
 
-IDENTITY_POOL_ID = 'us-east-1:26e70958-ceba-4f4b-94e2-1d7bfc1029db'
-IDENTITY_ID = client_identify.get_id(
-         IdentityPoolId=IDENTITY_POOL_ID
-)['IdentityId']
-temperate_id = client_identify.get_credentials_for_identity(
-       IdentityId=IDENTITY_ID
-)
+# IDENTITY_POOL_ID = 'us-east-1:26e70958-ceba-4f4b-94e2-1d7bfc1029db'
+# IDENTITY_ID = client_identify.get_id(
+#          IdentityPoolId=IDENTITY_POOL_ID
+# )['IdentityId']
+# temperate_id = client_identify.get_credentials_for_identity(
+#        IdentityId=IDENTITY_ID
+# )
 
 
 def update_user_profile(user_info, token):
@@ -200,7 +200,11 @@ def main():
         return render_template("error.html")
     
     return render_template("main.html")
-
+    # return {
+    #       'statusCode': 200,
+    #       'token': access_token,
+    #       'text': json.dumps("Get access token successfully.")
+    # }
 
 
 
