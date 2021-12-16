@@ -190,13 +190,6 @@ def validate_token():
         
     access_token = request.headers['token']
     response = requests.get('https://baseball.cu-fantasy.com/get_exp', headers=request.headers).json()
-    return {
-          'statusCode': 200,
-          'token': access_token,
-          'response': response,
-          'text': json.dumps("Get access token successfully.")
-    }
-    
     if 'data' in response:
         if time.time() > response['data']:
             body = {
