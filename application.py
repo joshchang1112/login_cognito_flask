@@ -10,7 +10,7 @@ import json
 application = Flask(__name__)
 client_id = "1c5m1dkc43amhvr10bjf1jrqsr"
 client_secret = "n8vk8hqna7aqn7fve6m7lq6i9mal3gbh3n0c834gqhglvuq68aj"
-callback_uri = 'https://baseball.cu-fantasy.com'
+callback_uri = 'https://baseball.cu-fantasy.com/'
 cognito_app_url = "https://cu-fantasy.auth.us-east-1.amazoncognito.com"
 token_expire_time = {}
 
