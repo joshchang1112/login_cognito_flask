@@ -24,7 +24,7 @@ def logout():
 
 @application.route('/validate_token')
 def validate_token():
-    if 'token' in request.headers:
+    if 'token' not in request.headers:
         return {
             'error message': 'You do not have the access to get the token information.'
     }
@@ -33,10 +33,10 @@ def validate_token():
         if time.time()-token_expire_time[access_token] < 3600:
             return jwt.decode(access_token, options={"verify_signature": False}, algorithms=["RS256"])
         else:
-            return {'error message': 'Token has expired. Please login again!'}
-    return {
+            return json.dumps({'error message': 'Token has expired. Please login again!'})
+    return json.dumps({
         'error message': 'The token did not exist. Please login first!'
-    }
+    })
 
 @application.route('/')
 def main():
