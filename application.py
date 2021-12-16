@@ -1,4 +1,5 @@
 from flask import Flask, Response, render_template, request, session
+from flask_cors import CORS
 import boto3
 import time
 import os
@@ -37,6 +38,7 @@ def update_user_profile(user_info, token):
     cur = conn.cursor()
     cur.execute("select * from user_info where username = %(username)s", {'username': user_info['username']})
     info = cur.fetchone()
+    # Create new user in the database
     if not info:
         client = boto3.client('cognito-idp', 
                            region_name='us-east-1',
@@ -55,10 +57,24 @@ def update_user_profile(user_info, token):
         values_str = ','.join(values)
         cur.execute('Insert into user_info {} Values ({})'.format(columns, values_str))
         conn.commit()
+
+        # Subscribe the SNS topic
+        client = boto3.client('sns', region_name='us-east-1')
+        response = client.subscribe(
+            TopicArn='arn:aws:sns:us-east-1:640580034319:fantasy-baseball',
+            Protocol='email',
+            Endpoint=email,
+            Attributes={
+                'FilterPolicy':{
+                    'email': [email]
+                }
+            }
+        )
         return {
             'statusCode': 200,
             'text': json.dumps('Succeessfully insert new user!')
         } 
+    # Update user_token-related information in the database
     else:
         cur.execute("Update user_info SET access_token = %(token)s WHERE username = %(username)s"\
             , {'token': token, 'username': user_info['username']})
@@ -74,7 +90,7 @@ def update_user_profile(user_info, token):
 
 
 application = Flask(__name__)
-
+CORS(application)
 
 @application.route('/login')
 def login():
