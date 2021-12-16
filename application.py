@@ -174,7 +174,7 @@ def get_exp():
     
     body = {
         'text': 'Succeessfully get exp time.',
-        'data': info[0]['exp']
+        'data': info[0]['token_exp']
     }
     res = Response(json.dumps(body), status=200, content_type='application/json')
     return res
@@ -189,7 +189,7 @@ def validate_token():
         return res
         
     access_token = request.headers['token']
-    response = requests.get('https://baseball.cu-fantasy.com/get_exp', headers=request.headers).text
+    response = requests.get('https://baseball.cu-fantasy.com/get_exp', headers=request.headers).json()
     return {
           'statusCode': 200,
           'token': access_token,
