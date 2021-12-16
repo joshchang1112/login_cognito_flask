@@ -60,11 +60,11 @@ def update_user_profile(user_info, token):
 
         # Subscribe the SNS topic
         client = boto3.client('sns', region_name='us-east-1')
-        response = client.subscribe(
-            TopicArn='arn:aws:sns:us-east-1:640580034319:fantasy-baseball',
-            Protocol='email',
-            Endpoint=email
-        )
+        # response = client.subscribe(
+        #     TopicArn='arn:aws:sns:us-east-1:640580034319:fantasy-baseball',
+        #     Protocol='email',
+        #     Endpoint=email
+        # )
         
         return {
             'statusCode': 200,
