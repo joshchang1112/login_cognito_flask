@@ -52,7 +52,7 @@ def main():
     }
     
     response = requests.post(token_url, auth=auth, data=params).json()
-    print(response)
+    return json.dumps(response)
     if not 'id_token' in response:
         return render_template("error.html")
     
