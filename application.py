@@ -103,93 +103,111 @@ def logout():
 @application.route('/get_username')
 def get_username():
     if 'token' not in request.headers:
-        return {
-            'statusCode': 401,
-            'text': json.dumps('You do not have token information in the headers.')
+        body = {
+            'text': 'You do not have token information in the headers.'
         }
+        res = Response(json.dumps(body), status=401, content_type='application/json')
+        return res
+
     access_token = request.headers['token']
     cur = conn.cursor()
     cur.execute("select username from user_info where access_token = %(token)s", {'token': access_token})
     info = cur.fetchall()
     if not info:
-        return {
-            'statusCode': 500,
-            'text': json.dumps('The token is invalid. Please login first and try again.')
+        body = {
+            'text': 'The token is invalid. Please login first and try again.'
         }
-    return {
-            'statusCode': 200,
-            'text': json.dumps('Succeessfully get username'),
-            'data': info[0]['username']
-        }
+        res = Response(json.dumps(body), status=500, content_type='application/json')
+        return res
+    body = {
+        'text': 'Succeessfully get username.',
+        'data': info[0]['username']
+    }
+    res = Response(json.dumps(body), status=200, content_type='application/json')
+    return res
 
 @application.route('/get_email')
 def get_email():
     if 'token' not in request.headers:
-        return {
-            'statusCode': 401,
-            'text': json.dumps('You do not have token information in the headers.')
+        body = {
+            'text': 'You do not have token information in the headers.'
         }
+        res = Response(json.dumps(body), status=401, content_type='application/json')
+        return res
+
     access_token = request.headers['token']
     cur = conn.cursor()
     cur.execute("select email from user_info where access_token = %(token)s", {'token': access_token})
     info = cur.fetchall()
     if not info:
-        return {
-            'statusCode': 500,
-            'text': json.dumps('The token is invalid. Please login first and try again.')
+        body = {
+            'text': 'The token is invalid. Please login first and try again.'
         }
-    return {
-            'statusCode': 200,
-            'text': json.dumps('Succeessfully get email'),
+        res = Response(json.dumps(body), status=500, content_type='application/json')
+        return res
+    body = {
+            'text': 'Succeessfully get email.',
             'data': info[0]['email']
-        }
+    }
+    res = Response(json.dumps(body), status=200, content_type='application/json')
+    return res
 
 @application.route('/get_exp')
 def get_exp():
     if 'token' not in request.headers:
-        return {
-            'statusCode': 401,
-            'text': json.dumps('You do not have token information in the headers.')
+        body = {
+            'text': 'You do not have token information in the headers.'
         }
+        res = Response(json.dumps(body), status=401, content_type='application/json')
+        return res
+
     access_token = request.headers['token']
     cur = conn.cursor()
     cur.execute("select token_exp from user_info where access_token = %(token)s", {'token': access_token})
     info = cur.fetchall()
     if not info:
-        return {
-            'statusCode': 401,
-            'text': json.dumps('The token is invalid. Please login first and try again.')
+        body = {
+            'text': 'The token is invalid. Please login first and try again.'
         }
-    return {
-            'statusCode': 200,
-            'text': json.dumps('Succeessfully get exp time'),
-            'data': info[0]['token_exp']
-        }
+        res = Response(json.dumps(body), status=500, content_type='application/json')
+        return res
+    
+    body = {
+        'text': 'Succeessfully get exp time.',
+        'data': info[0]['exp']
+    }
+    res = Response(json.dumps(body), status=200, content_type='application/json')
+    return res
 
 @application.route('/validate_token')
 def validate_token():
     if 'token' not in request.headers:
-        return {
-            'statusCode': 401,
-            'text': json.dumps('You do not have token information in the headers.')
+        body = {
+            'text': 'You do not have token information in the headers.'
         }
+        res = Response(json.dumps(body), status=401, content_type='application/json')
+        return res
+        
     access_token = request.headers['token']
     response = requests.get('https://baseball.cu-fantasy.com/get_exp', headers=request.headers).json()
     if 'data' in response:
         if time.time() > response['data']:
-            return {
-                'statusCode': 401,
-                'text': json.dumps('Your token has expired. Please login again.')
+            body = {
+                'text': 'Your token has expired. Please login again.'
             }
+            res = Response(json.dumps(body), status=401, content_type='application/json')
+            return res
         else:
-            return {
-                'statusCode': 200,
-                'text': json.dumps('The token has been verified successfully!')
-            } 
-    return {
-        'statusCode': 401,
-        'text': json.dumps('The token is invalid. Please login first.')
-    } 
+            body = {
+                'text': 'The token has been verified successfully.'
+            }
+            res = Response(json.dumps(body), status=200, content_type='application/json')
+            return res
+    body = {
+        'text': 'The token is invalid. Please login first.'
+    }
+    res = Response(json.dumps(body), status=401, content_type='application/json')
+    return res
 
 @application.route('/')
 def main():
