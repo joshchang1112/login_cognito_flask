@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template, request
+from flask import Flask, Response, render_template, request, session
 import boto3
 import time
 import os
@@ -53,18 +53,18 @@ def main():
     
     response = requests.post(token_url, auth=auth, data=params).json()
     # return json.dumps(response)
-    if not 'id_token' in response:
+    if not 'access_token' in response and not 'token' in session:
         return render_template("error.html")
     
-    
+    session['token'] = response['access_token']
     # client = boto3.client('cognito-idp', 
     #                        region_name='us-east-1',
     #                        aws_access_key_id=os.environ['ACCESS_KEY'],
     #                        aws_secret_access_key=os.environ['SECRET_KEY']
     # )
     # response['access_token'] = 'eyJraWQiOiI1dlR1Yk9UcE9aZmk2YkNyUEhYd1JMTlRUcnZVbzJ3dHRIcVJxTWhiblg4PSIsImFsZyI6IlJTMjU2In0.eyJvcmlnaW5fanRpIjoiOTA3YzEwMjktZmM2OC00ZWEzLThhNmEtNWU1MTNiNWU1MjVlIiwic3ViIjoiZGJiMWI5ZmYtNmE1Yi00NjEzLThjZDYtYTNhMjFjZjdkOTRkIiwidG9rZW5fdXNlIjoiYWNjZXNzIiwic2NvcGUiOiJhd3MuY29nbml0by5zaWduaW4udXNlci5hZG1pbiBvcGVuaWQgZW1haWwiLCJhdXRoX3RpbWUiOjE2Mzk1MjM5NDEsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX0ZYdHBjemY5UiIsImV4cCI6MTYzOTUyNzU0MSwiaWF0IjoxNjM5NTIzOTQxLCJ2ZXJzaW9uIjoyLCJqdGkiOiI0ZjFlNDk5Yi04MjM2LTQwYTctYjE2Ny0yZmI0MWZmOGFmMjciLCJjbGllbnRfaWQiOiIxYzVtMWRrYzQzYW1odnIxMGJqZjFqcnFzciIsInVzZXJuYW1lIjoiam9zaGNoYW5nIn0.MxT7olkgRm_0Dz3Pg-ujsFGqxQ77YMkvXuTdzrixcplW0BmyPEPwH9_wSnh5yY3gS8NpH69UGZOetIqIedS2B-_FI1zvzaagbMnp8U3mE-hp9-TUqF5YAG6TSmu0uSulWQqtZJgjMf4epx0vonpD-Dgr0ftXEZkE1fhRCU4xLlPwgu6YvSI7r3LBfWiwJP3EDWKdNwyj0lkL1UlKy6W13IrEz_vf6GS8TAd99aKFy3ljg1U0xCCL3u0p9blkxSYS_iP7wVg6laDNmO0QRSszbQ7-SJFMTWZowNlbZj-KASdMmOSv0wbsNHZewQ4GxM3kRMziiOagpXgkxqw7gds3WQ'
-    user_info = jwt.decode(response['access_token'], options={"verify_signature": False}, algorithms=["RS256"])
-    token_expire_time[response['access_token']] = user_info['exp']
+    user_info = jwt.decode(session['token'], options={"verify_signature": False}, algorithms=["RS256"])
+    token_expire_time[session['token']] = user_info['exp']
     # user_info = client.get_user(AccessToken=response['access_token'])
     # print(user_info)
     return render_template("main.html")
