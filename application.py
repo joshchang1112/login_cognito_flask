@@ -199,12 +199,12 @@ def main():
     else:
         return render_template("error.html")
     
-    return render_template("main.html")
-    # return {
-    #       'statusCode': 200,
-    #       'token': access_token,
-    #       'text': json.dumps("Get access token successfully.")
-    # }
+    # return render_template("main.html")
+    return {
+          'statusCode': 200,
+          'token': access_token,
+          'text': json.dumps("Get access token successfully.")
+    }
 
 
 
