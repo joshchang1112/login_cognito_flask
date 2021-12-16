@@ -117,7 +117,7 @@ def get_username():
         body = {
             'text': 'The token is invalid. Please login first and try again.'
         }
-        res = Response(json.dumps(body), status=500, content_type='application/json')
+        res = Response(json.dumps(body), status=401, content_type='application/json')
         return res
     body = {
         'text': 'Succeessfully get username.',
@@ -143,7 +143,7 @@ def get_email():
         body = {
             'text': 'The token is invalid. Please login first and try again.'
         }
-        res = Response(json.dumps(body), status=500, content_type='application/json')
+        res = Response(json.dumps(body), status=401, content_type='application/json')
         return res
     body = {
             'text': 'Succeessfully get email.',
@@ -169,7 +169,7 @@ def get_exp():
         body = {
             'text': 'The token is invalid. Please login first and try again.'
         }
-        res = Response(json.dumps(body), status=500, content_type='application/json')
+        res = Response(json.dumps(body), status=401, content_type='application/json')
         return res
     
     body = {
@@ -190,6 +190,7 @@ def validate_token():
         
     access_token = request.headers['token']
     response = requests.get('https://baseball.cu-fantasy.com/get_exp', headers=request.headers).json()
+    return response
     if 'data' in response:
         if time.time() > response['data']:
             body = {
