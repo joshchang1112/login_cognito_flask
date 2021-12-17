@@ -239,31 +239,30 @@ def validate_token():
 @application.route('/main')
 def main():
     code = request.args.get('code')
-    return json.dumps(code)
-    # token_url = "{}/oauth2/token".format(cognito_app_url)
-    # auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
-    # params = {
-    #     "grant_type": "authorization_code",
-    #     "client_id": client_id,
-    #     "code": code,
-    #     "redirect_uri": callback_uri
-    # }
+    token_url = "{}/oauth2/token".format(cognito_app_url)
+    auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
+    params = {
+        "grant_type": "authorization_code",
+        "client_id": client_id,
+        "code": code,
+        "redirect_uri": callback_uri
+    }
     
-    # response = requests.post(token_url, auth=auth, data=params).json()
-    # print(response)
-    # if 'access_token' in response:
-    #     access_token = response['access_token']
-    #     decode_user_info = jwt.decode(access_token, options={"verify_signature": False}, algorithms=["RS256"])
-    #     response = update_user_profile(decode_user_info, access_token)
-    #     print(response)
-    # elif 'token' in request.headers:
-    #     access_token = request.headers['token']
-    # else:
-    #     body = {
-    #         'text': 'The token is invalid. Please login first and try again.'
-    #     }
-    #     res = Response(json.dumps(body), status=401, content_type='application/json')
-    #     return res
+    response = requests.post(token_url, auth=auth, data=params).json()
+    print(response)
+    if 'access_token' in response:
+        access_token = response['access_token']
+        decode_user_info = jwt.decode(access_token, options={"verify_signature": False}, algorithms=["RS256"])
+        response = update_user_profile(decode_user_info, access_token)
+        print(response)
+    elif 'token' in request.headers:
+        access_token = request.headers['token']
+    else:
+        body = {
+            'text': 'The token is invalid. Please login first and try again.'
+        }
+        res = Response(json.dumps(body), status=401, content_type='application/json')
+        return res
     
     # return render_template("main.html")
     return redirect('https://baseball.cu-fantasy.com')
