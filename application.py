@@ -239,7 +239,7 @@ def validate_token():
 @application.route('/main')
 def main():
     code = request.args.get('code')
-    return json.dumps(code)
+    return json.dumps(request.args)
     token_url = "{}/oauth2/token".format(cognito_app_url)
     auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     params = {
