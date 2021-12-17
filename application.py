@@ -108,11 +108,21 @@ def logout():
 @application.route('/get_recent_token')
 def get_recent_token():
     cur = conn.cursor()
-    cur.execute("select access_token from user_info ORDER BY token_exp DESC")
+    cur.execute("select access_token, token_start from user_info ORDER BY token_exp DESC")
     info = cur.fetchall()
+    token_start = info[0]['token_start']
+    token = info[0]['access_token']
+    if time.time()-token_start > 10:
+        body = {
+            'text': 'Please login first.',
+            'data': None
+        }
+        res = Response(json.dumps(body), status=401, content_type='application/json')
+        return res
+
     body = {
         'text': 'Succeessfully get access_token.',
-        'data': info[0]['access_token']
+        'data': token
     }
     res = Response(json.dumps(body), status=200, content_type='application/json')
     return res
@@ -239,7 +249,7 @@ def main():
     }
     
     response = requests.post(token_url, auth=auth, data=params).json()
-    # return json.dumps(response)
+    print(response)
     if 'access_token' in response:
         access_token = response['access_token']
         decode_user_info = jwt.decode(access_token, options={"verify_signature": False}, algorithms=["RS256"])
