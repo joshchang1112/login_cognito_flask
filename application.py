@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template, request, session
+from flask import Flask, Response, render_template, request, session, redirect, url_for
 from flask_cors import CORS
 import boto3
 import time
@@ -21,7 +21,7 @@ conn = pymysql.connect(
 
 client_id = "1c5m1dkc43amhvr10bjf1jrqsr"
 client_secret = "n8vk8hqna7aqn7fve6m7lq6i9mal3gbh3n0c834gqhglvuq68aj"
-callback_uri = 'https://baseball.cu-fantasy.com/'
+callback_uri = 'https://d1dskwpbiuiktp.cloudfront.net/api/main/'
 cognito_app_url = "https://cu-fantasy.auth.us-east-1.amazoncognito.com"
 client_identify = boto3.client('cognito-identity', region_name='us-east-1')
 
@@ -59,12 +59,21 @@ def update_user_profile(user_info, token):
         conn.commit()
 
         # Subscribe the SNS topic
-        client = boto3.client('sns', region_name='us-east-1')
-        # response = client.subscribe(
-        #     TopicArn='arn:aws:sns:us-east-1:640580034319:fantasy-baseball',
-        #     Protocol='email',
-        #     Endpoint=email
-        # )
+        client = boto3.client('sns', 
+            region_name='us-east-1', 
+            aws_access_key_id=os.environ['ACCESS_KEY'],
+            aws_secret_access_key=os.environ['SECRET_KEY'])
+
+        response = client.subscribe(
+            TopicArn='arn:aws:sns:us-east-1:640580034319:fantasy-baseball',
+            Protocol='email',
+            Endpoint=email,
+            Attributes={
+                'FilterPolicy': json.dumps({
+                     'email': [email]
+                })
+            }
+        )
         
         return {
             'statusCode': 200,
@@ -185,7 +194,7 @@ def validate_token():
         return res
         
     access_token = request.headers['token']
-    response = requests.get('https://baseball.cu-fantasy.com/get_exp', headers=request.headers).json()
+    response = requests.get('http://localhost:5000/get_exp', headers=request.headers).json()
     if 'data' in response:
         if time.time() > response['data']:
             body = {
@@ -205,7 +214,7 @@ def validate_token():
     res = Response(json.dumps(body), status=401, content_type='application/json')
     return res
 
-@application.route('/')
+@application.route('/main')
 def main():
     code = request.args.get('code')
     token_url = "{}/oauth2/token".format(cognito_app_url)
@@ -230,6 +239,7 @@ def main():
         return render_template("error.html")
     
     # return render_template("main.html")
+    return redirect('https://baseball.cu-fantasy.com')
     return {
           'statusCode': 200,
           'token': access_token,
