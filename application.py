@@ -216,7 +216,7 @@ def validate_token():
         return res
         
     access_token = request.headers['token']
-    response = requests.get('http://localhost:5000/get_exp', headers=request.headers).json()
+    response = requests.get('http://fantasy-baseball-login-env.eba-mc8vyb22.us-east-1.elasticbeanstalk.com/get_exp', headers=request.headers).json()
     if 'data' in response:
         if time.time() > response['data']:
             body = {
@@ -264,8 +264,8 @@ def main():
         res = Response(json.dumps(body), status=401, content_type='application/json')
         return res
     
-    # return render_template("main.html")
-    return redirect('https://baseball.cu-fantasy.com')
+    # # return render_template("main.html")
+    # return redirect('https://baseball.cu-fantasy.com')
     return {
           'statusCode': 200,
           'token': access_token,
