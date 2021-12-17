@@ -105,6 +105,18 @@ def login():
 def logout():
     return render_template("logout.html")
 
+@application.route('/get_recent_token')
+def get_recent_token():
+    cur = conn.cursor()
+    cur.execute("select access_token from user_info ORDER BY token_exp DESC")
+    info = cur.fetchall()
+    body = {
+        'text': 'Succeessfully get access_token.',
+        'data': info[0]['access_token']
+    }
+    res = Response(json.dumps(body), status=200, content_type='application/json')
+    return res
+
 @application.route('/get_username')
 def get_username():
     if 'token' not in request.headers:
