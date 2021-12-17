@@ -236,7 +236,11 @@ def main():
     elif 'token' in request.headers:
         access_token = request.headers['token']
     else:
-        return render_template("error.html")
+        body = {
+            'text': 'The token is invalid. Please login first and try again.'
+        }
+        res = Response(json.dumps(body), status=401, content_type='application/json')
+        return res
     
     # return render_template("main.html")
     return redirect('https://baseball.cu-fantasy.com')
